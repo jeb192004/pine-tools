@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <link href="./styles.css" rel="stylesheet">
+    <title>Pine Command Assist</title>
+  </head>
+  <body>
+    <strong>Distro: <span id="distro"></span></strong><br>
+    <strong>DE: <span id="de"></span></strong><br>
+    <hr>
+    <div id="password_container"><input id="password" placeholder="Password"><br>
+    <p>Your password is needed for installing xkb-config and creating the config file and it will NOT be saved.</p>
+    <hr>
+    <p>This button will install <strong id="kb_config_app_name"></strong> and create the <strong id="file_to_create"></strong> file.<br>You need to reboot your phone after this is finished.</p>
+    <button id="keyboard">run keyboard config</button><br>
+    <hr>
+    <div id="osk_container"><button id="on_screen_keyboard">Toggle on screen keyboard on</button><br>
+    <hr></div>
+    You can create as many commands as you'd like and they will get saved to a JSON file in the following folder.<br>
+    <strong>Save folder: <span id="save-folder"></span></strong><br>
+    This file can be backed up to an SD card.  If you're doing a fresh OS install, Distro hopping, or need to recover your commands file for any reason, place the file back into the Documents folder.
+    <div id="add_command_container"><input id="name" placeholder="Label"><br>
+    <textarea id="command" placeholder="Add command here"></textarea><br>
+    <button id="add_command_button">Submit</button></div>
+    <hr>
+    <div id="commands"></div>
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+  </body>
+</html>

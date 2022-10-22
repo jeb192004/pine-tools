@@ -1,0 +1,196 @@
+// Modules to control application life and create native browser window
+const {app, BrowserWindow, ipcMain, nativeTheme, dialog} = require('electron')
+const path = require('path')
+
+const { exec } = require("child_process");
+const fs = require('fs');
+var mainWindow, distro, doc, de, install, uninstall, my_commands = [], onskb_state;
+
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+    nodeIntegration: true,
+    contextIsolation: true,
+    enableRemoteModule: true,
+    }
+    
+  })
+ipcMain.handle('info',async()=>{
+	var info_json = {};
+	distro = await do_cli(`grep '^NAME' /etc/os-release`);
+	distro = distro.split('"')[1];
+	if(distro === 'Manjaro-ARM'){
+			install = 'pacman -S';
+		}
+	de = await do_cli(`echo $XDG_CURRENT_DESKTOP`);
+	de = de.replace(/\s/g,'')
+	doc = await do_cli('echo ~/Documents');
+	doc = doc.replace(/\s/g,'')
+	info_json.distro = distro;
+	
+	var json = await get_json(doc+'/');
+	info_json.de = de;
+	info_json.folder = doc;
+	if(de === 'Phosh:GNOME'){
+		onskb_state = await do_cli(`gsettings get org.gnome.desktop.a11y.applications screen-keyboard-enabled`);
+		onskb_state = onskb_state.replace(/\s/g,'');
+		info_json.onskb_state = onskb_state;
+	}
+	return JSON.stringify(info_json);
+	})
+ipcMain.on('keyboard',async(event, password)=>{
+	const options = {
+	  type: 'question',
+	  buttons: ['yes', 'no'],
+	  defaultId:1,
+	  title:`XKB Config`,
+	  message:`Are you sure you want to run the install script?`,
+	  detail:`Password: ${password}`,
+  };
+		var isInstall = await alert('install', options);
+		if(isInstall){
+			await do_cli(`echo "${password}" | sudo -S pacman -S xkeyboard-config --noconfirm`);
+			await do_cli(`echo "${password}" | sudo -S mkdir /usr/lib/systemd/system/phosh.service.d`);
+			await do_cli(`echo "${password}" | sudo -S touch /usr/lib/systemd/system/phosh.service.d/override.conf`);
+			await do_cli(`echo "${password}" | echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo -S tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
+			const options2 = {title:`XKB Config`,message:`Keyboard config fnished successfully!`,detail:`Please restart Phosh or the device.`,};
+			alert('install', options2)
+		}
+		return 'finished';
+	});
+ipcMain.handle('toggle_kb',async()=>{
+	if(onskb_state === 'true'){
+		await do_cli('gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false');
+		onskb_state = 'false';
+	}else{
+		await do_cli('gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true');
+		onskb_state = 'true';
+	}
+		return 'finished';
+	});
+ipcMain.handle('get_json', async()=>{
+	var json = await get_json(doc+'/');
+	console.log(json)
+	return json;
+	});
+ipcMain.on('alert', async(event, val)=>{
+	val = JSON.parse(val)
+	console.log(val)
+	alert(val[0], val[1])
+	return
+	});
+	
+	ipcMain.on('asynchronous-message', async(event, arg) => {
+		var json = {};
+		if(arg.split(',').length > 1){
+			var name = arg.split(',')[0]
+			var command = arg.split(',')[1];
+			json.name = name;
+			json.command = command;
+			my_commands.push(json);
+			console.log(my_commands);
+			await write_json(doc + '/', my_commands)
+			event.reply('asynchronous-reply', 'pong')
+		}else{event.reply('asynchronous-reply', 'you need to fill out both')}
+  
+})
+	
+ipcMain.handle('delete', async(event, arg) => {
+		var json = await get_json(doc+'/');
+		json = JSON.parse(json);
+		console.log(arg)
+		const index = json.findIndex(x => x.name === arg);
+		if(index !== undefined)json.splice(index,1)
+		await write_json(doc + '/', json)
+		console.log(json)
+})
+
+  // and load the index.html of the app.
+  mainWindow.loadFile('index.html')
+console.log(`Hello from Electron 👋`)
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+  
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.whenReady().then(() => {
+  createWindow()
+
+  app.on('activate', function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+})
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
+})
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
+
+async function do_cli(command){
+return new Promise((resolve,reject)=>{
+	 exec(command, (error, stdout, stderr) => {
+    if (error) {
+        console.log(`[ERROR] do_cli: ${error.message}`);
+        resolve(error)
+    }
+    
+    if (stderr) {
+        console.log(`[STDERROR] do_cli: ${stderr}`);
+        resolve(stderr)
+    }
+	
+    console.log(`do_cli: ${stdout}`); // Output response from the terminal
+    resolve(stdout)
+    });
+	})
+	}
+
+async function write_json(folder, json){
+	console.log(folder)
+	try { fs.writeFileSync(folder + 'pine_commands.json', JSON.stringify(json), 'utf-8'); }
+	catch(e) { console.log('Failed to save the file !', e); }
+}
+
+async function get_json(folder){
+	console.log(folder)
+	try { 
+		var json = fs.readFileSync(folder + 'pine_commands.json', 'utf-8');
+		return json;
+		}
+	catch(e) { console.log('Failed to get the file !', e); }
+}
+
+function alert(source, options){
+	return new Promise((resolve, reject)=>{
+			dialog.showMessageBox(
+      mainWindow,options)
+      .then(result => {
+        if (result.response === 0) {
+          // bound to buttons array
+          console.log("Default button clicked.");
+          resolve(true)
+        } else if (result.response === 1) {
+          // bound to buttons array
+          console.log("Cancel button clicked.");
+          resolve(false)
+        }
+      }
+    );
+	})
+  //const response = dialog.showMessageBox(null, options, (resonse, checkboxChecked)=>{console.log(response, checkboxChecked)});
+  
+	}
