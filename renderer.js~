@@ -41,8 +41,8 @@ try{
 		buttons = `<button class="clone" id="${item.name}" data-command='${clone_command}'>Clone</button>
 		<button class="push" id="${item.name}" data-command='${push_command}'>Push</button>
 		<button class="pull" id="${item.name}" data-command='${pull_command}'>Pull</button>
-		<br><button class="delete" id="${item.name}">Delete Command</button>`
-	}else{buttons = `<button class="copy" id="${item.name}" data-command='${clone_command}'>Copy</button><br><button class="delete" id="${item.name}">Delete Command</button>`;}
+		<button class="delete" id="${item.name}">Delete Command</button>`
+	}else{buttons = `<button class="copy" id="${item.name}" data-command='${clone_command}'>Copy</button><button class="delete" id="${item.name}">Delete Command</button>`;}
 	
 	document.getElementById('commands').innerHTML += `<div class="commands_container">
 	<div class="commands_name">${item.name}</div>
