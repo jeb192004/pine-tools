@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder -l --arm64"
   },
   "repository": "https://github.com/jeb192004/pine-tools",
   "keywords": [
@@ -21,7 +21,7 @@
   },
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^21.2.0",
+    "electron": "^15.3.1",
     "electron-builder": "^23.6.0"
   },
   "build": {
@@ -30,7 +30,8 @@
     "linux": {
       "icon": "./pine-cone-color.png",
       "target": [
-        "pacman"
+        "pacman",
+        "deb"
       ]
     }
   }
