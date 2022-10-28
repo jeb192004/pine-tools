@@ -17,8 +17,8 @@ try{
 	  console.log(onskb_state)
 	  if(onskb_state === 'true'){onskb_button_text = 'off'}else{onskb_button_text = 'on'}
 	}
-  if(distro === 'Manjaro-ARM'||distro === 'Arch Linux ARM'){document.getElementById('kb_config_app_name').innerHTML = 'xkeyboard-config'}
-  if(distro === 'Mobian'){document.getElementById('kb_config_app_name').innerHTML = 'xkb-data'}
+  if(distro === 'Manjaro-ARM'||distro === 'Arch Linux ARM'){document.getElementById('kb_config_app_name').innerHTML = 'xkeyboard-config'; document.getElementById('kb_config_app_name2').innerHTML = 'xkeyboard-config'}
+  if(distro === 'Debian GNU/Linux'){document.getElementById('kb_config_app_name').innerHTML = 'xkb-data'; document.getElementById('kb_config_app_name2').innerHTML = 'xkb-data'}
   
   if(de === 'Phosh:GNOME'){
 	  document.getElementById('file_to_create').innerHTML = 'phosh.service.d/override.conf';
