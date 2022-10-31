@@ -1,3 +1,4 @@
 node_modules/
 dist/linux-unpacked/
 dist/linux-arm64-unpacked/
+output/

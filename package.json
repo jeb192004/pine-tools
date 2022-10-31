@@ -21,18 +21,33 @@
   },
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^15.3.1",
+    "electron": "^17.0.0",
     "electron-builder": "^23.6.0"
   },
   "build": {
     "appId": "com.jeb.pine-command-assist",
     "productName": "Pine Command Assist",
     "linux": {
-      "icon": "./pine-cone-color.png",
+      "icon": "./icons/",
       "target": [
-        "pacman",
-        "deb"
+        {
+          "target": "pacman",
+          "arch": "arm64"
+        },
+        {
+          "target": "deb",
+          "arch": "arm64"
+        }
       ]
+    },
+    "extraResources": [
+      "res",
+      "icons",
+      "48x48.png"
+    ],
+    "directories": {
+      "buildResources": "icons",
+      "output": "output"
     }
   }
 }

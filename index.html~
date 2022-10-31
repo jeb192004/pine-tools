@@ -9,15 +9,23 @@
     <title>Pine Command Assist</title>
   </head>
   <body>
-  <img src="./pine-cone-color.png"/>
+  <header id="titlebar">
+		  <div class="draggable">
+		  <span class="title">Pine Commands Assist</span>
+		  <img src="/icons/48x48.png" alt="pine-assist.png">
+		  		<div class="controls">
+		  				<span class="button close"></span>
+		  				<span class="button minimize"></span>
+		  				<span class="button maximize"></span>
+		  		</div>
+		  		
+		  </div>
+  </header>
     <strong>Distro: <span id="distro"></span></strong><br>
     <strong>DE: <span id="de"></span></strong><br>
     <hr>
-    <div id="password_container"><input id="password" placeholder="Password"><br>
-    <p>Your password is needed for installing <strong id="kb_config_app_name2"></strong> and creating the config file and it will NOT be saved.</p>
-    <hr>
-    <p>This button will install <strong id="kb_config_app_name"></strong> and create the <strong id="file_to_create"></strong> file.<br>You need to reboot your phone after this is finished.</p>
-    <button id="keyboard">run keyboard config</button><br>
+    <p>This button will copy the command to install <strong id="kb_config_app_name"></strong> and create the <strong id="file_to_create"></strong> file.<br>You will need to reboot phosh or your phone after this is finished.</p>
+    <button id="keyboard">Copy Keyboard Config Command</button><br>
     <hr>
     <div id="osk_container"><button id="on_screen_keyboard">Toggle on screen keyboard on</button><br>
     <hr></div>
@@ -28,6 +36,7 @@
     <textarea id="command" placeholder="Add command here" rows="4"></textarea><br>
     <button id="add_command_button">Submit</button></div>
     <hr>
+    <p>The following buttons only copy the commands to your clipboard.  Exception is the Delete Command button.  That will delete the command from your JSON file where your commands are saved.</p>
     <div id="commands"></div>
     <hr><br>
     <a href="https://www.flaticon.com/free-icons/pine" title="pine icons">Pine icons created by Freepik - Flaticon</a>

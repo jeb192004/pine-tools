@@ -11,10 +11,12 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname,'./pine-icon-color.png'),
+    frame:false,
+    icon: path.join(__dirname,'/icons/48x48.png'),
+    
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-    nodeIntegration: true,
+         nodeIntegration: true,
     contextIsolation: true,
     enableRemoteModule: true,
     }
@@ -47,22 +49,20 @@ ipcMain.handle('info',async()=>{
 	return JSON.stringify(info_json);
 	})
 ipcMain.on('keyboard',async(event, password)=>{
-	const options = {
-	  type: 'question',
-	  buttons: ['yes', 'no'],
-	  defaultId:1,
-	  title:`XKB Config`,
-	  message:`Are you sure you want to run the install script?`,
-	  detail:`Password: ${password}`,
-  };
-		var isInstall = await alert('install', options);
+		var res, q, buttons;
+		var isInstall = await alert('install', `XKB Config`,`Are you sure you want to run the install script?`,`Password: ${password}`,['yes','no']);
 		if(isInstall){
-			await do_cli(`echo "${password}" | sudo -S ${install}`);
+			res = await do_cli(`echo "${password}" | sudo -S ${install}`);
+			if (res === 'error') {res = 'Could not install.  Check your password.'; q = "";buttons = ['cancel']}else {
+				res = 'XKB Config Installed!'; q = "Continue?";buttons = ['yes']
+			}
+			res = await alert('install', `XKB Config Install`,res,q, buttons);
+			if (!res) {return}
 			await do_cli(`echo "${password}" | sudo -S mkdir /usr/lib/systemd/system/phosh.service.d`);
 			await do_cli(`echo "${password}" | sudo -S touch /usr/lib/systemd/system/phosh.service.d/override.conf`);
 			await do_cli(`echo "${password}" | echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo -S tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
-			const options2 = {title:`XKB Config`,message:`Keyboard config fnished successfully!`,detail:`Please restart Phosh or the device.`,};
-			alert('install', options2)
+			res = `Keyboard config fnished successfully!`;q = `Please restart Phosh or the device.`;buttons = ['ok']
+			alert('install', `XKB Config Install`,res,q, buttons);
 		}
 		return 'finished';
 	});
@@ -95,6 +95,8 @@ ipcMain.on('alert', async(event, val)=>{
 			var command = arg.split(',')[1];
 			json.name = name;
 			json.command = command;
+			my_commands = await get_json(doc+'/');
+			console.log(my_commands);
 			my_commands.push(json);
 			console.log(my_commands);
 			await write_json(doc + '/', my_commands)
@@ -112,10 +114,19 @@ ipcMain.handle('delete', async(event, arg) => {
 		await write_json(doc + '/', json)
 		console.log(json)
 })
+ipcMain.handle('close', async(event, arg) => {
+	console.log('close')
+		mainWindow.close();
+})
+ipcMain.handle('min', async(event, arg) => {
+		mainWindow.minmize();
+})
+ipcMain.handle('max', async(event, arg) => {
+		mainWindow.maximize();
+})
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-console.log(`Hello from Electron 👋`)
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
   
@@ -149,12 +160,12 @@ return new Promise((resolve,reject)=>{
 	 exec(command, (error, stdout, stderr) => {
     if (error) {
         console.log(`[ERROR] do_cli: ${error.message}`);
-        resolve(error)
+        resolve('error')
     }
     
     if (stderr) {
         console.log(`[STDERROR] do_cli: ${stderr}`);
-        resolve(stderr)
+        resolve('stderr')
     }
 	
     console.log(`do_cli: ${stdout}`); // Output response from the terminal
@@ -178,19 +189,29 @@ async function get_json(folder){
 	catch(e) { console.log('Failed to get the file !', e); }
 }
 
-function alert(source, options){
+function alert(source, titletxt, messagetxt, detailstxt, buttons){
 	return new Promise((resolve, reject)=>{
+		const options = {
+	  type: 'question',
+	  buttons: buttons,
+	  defaultId:1,
+	  title:titletxt,
+	  message:messagetxt,
+	  detail:detailstxt,
+  };
 			dialog.showMessageBox(
       mainWindow,options)
       .then(result => {
         if (result.response === 0) {
           // bound to buttons array
           console.log("Default button clicked.");
+          if (buttons[0] === 'cancel') {resolve(false)}else {
           resolve(true)
+          }
         } else if (result.response === 1) {
           // bound to buttons array
           console.log("Cancel button clicked.");
-          resolve(false)
+          reject(false)
         }
       }
     );

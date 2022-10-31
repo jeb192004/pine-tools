@@ -17,8 +17,14 @@ try{
 	  console.log(onskb_state)
 	  if(onskb_state === 'true'){onskb_button_text = 'off'}else{onskb_button_text = 'on'}
 	}
-  if(distro === 'Manjaro-ARM'||distro === 'Arch Linux ARM'){document.getElementById('kb_config_app_name').innerHTML = 'xkeyboard-config'}
-  if(distro === 'Mobian'){document.getElementById('kb_config_app_name').innerHTML = 'xkb-data'}
+  if(distro === 'Manjaro-ARM'||distro === 'Arch Linux ARM'){
+  	document.getElementById('kb_config_app_name').innerHTML = 'xkeyboard-config';
+  	install = 'pacman -S xkeyboard-config';  	
+  	}
+  if(distro === 'Debian GNU/Linux'){
+  	document.getElementById('kb_config_app_name').innerHTML = 'xkb-data'; 
+  	install = 'apt install xkb-data';  	
+  	}
   
   if(de === 'Phosh:GNOME'){
 	  document.getElementById('file_to_create').innerHTML = 'phosh.service.d/override.conf';
@@ -41,8 +47,8 @@ try{
 		buttons = `<button class="clone" id="${item.name}" data-command='${clone_command}'>Clone</button>
 		<button class="push" id="${item.name}" data-command='${push_command}'>Push</button>
 		<button class="pull" id="${item.name}" data-command='${pull_command}'>Pull</button>
-		<button class="delete" id="${item.name}">Delete Command</button>`
-	}else{buttons = `<button class="copy" id="${item.name}" data-command='${clone_command}'>Copy</button><button class="delete" id="${item.name}">Delete Command</button>`;}
+		<br><button class="delete" id="${item.name}">Delete Command</button>`
+	}else{buttons = `<button class="copy" id="${item.name}" data-command='${clone_command}'>Copy</button><br><button class="delete" id="${item.name}">Delete Command</button>`;}
 	
 	document.getElementById('commands').innerHTML += `<div class="commands_container">
 	<div class="commands_name">${item.name}</div>
@@ -95,9 +101,13 @@ func()
 document.getElementById("keyboard").addEventListener("click", keyboard_config)
 async function keyboard_config(){
 	  var passwd = document.getElementById('password').value;
-	  console.log(passwd)
-	  const res = await versions.keyboard_config(passwd)
-	  console.log(res)
+	  //console.log(passwd)
+	  //const res = await versions.keyboard_config(passwd)
+	  //console.log(res)
+	  copyText(`sudo ${install} && 
+	  mkdir -p /usr/lib/systemd/system/phosh.service.d && 
+	  sudo touch /usr/lib/systemd/system/phosh.service.d/override.conf && 
+	  echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo tee /usr/lib/systemd/system/phosh.service.d/override.conf`)
 	}
 document.getElementById("add_command_button").addEventListener("click", add_command)
 async function add_command(){
@@ -121,4 +131,8 @@ async function toggle_kb_on(){
 function copyText(text){
 		navigator.clipboard.writeText(text);
 	}
+
+document.querySelector('.button.close').addEventListener("click", ()=>{versions.closeW();});
+document.querySelector('.button.minimize').addEventListener("click", ()=>{});
+document.querySelector('.button.maximize').addEventListener("click", ()=>{});
 
