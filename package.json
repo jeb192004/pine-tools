@@ -1,12 +1,13 @@
 {
   "name": "pine-assist",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An app made to assist with cli commands",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder -l --arm64"
+    "dist": "electron-builder -l --arm64",
+    "pacman": "electron-builder -l pacman"
   },
   "repository": "https://github.com/jeb192004/pine-tools",
   "keywords": [
@@ -29,7 +30,8 @@
     "productName": "Pine Command Assist",
     "linux": {
       "icon": "./icons/",
-      "target": ["pacman","deb"]
+      "target": ["pacman","deb"],
+      "category":"Utility"
     },
     "extraResources": [
       "res",

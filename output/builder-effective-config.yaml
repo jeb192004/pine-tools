@@ -8,6 +8,7 @@ linux:
   target:
     - pacman
     - deb
+  category: Utility
 extraResources:
   - filter:
       - res
