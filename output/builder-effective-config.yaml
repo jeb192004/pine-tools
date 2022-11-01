@@ -1,0 +1,17 @@
+directories:
+  output: output
+  buildResources: icons
+appId: com.jeb.pine-command-assist
+productName: Pine Command Assist
+linux:
+  icon: ./icons/
+  target:
+    - pacman
+    - deb
+extraResources:
+  - filter:
+      - res
+      - icons
+      - 48x48.png
+files: []
+electronVersion: 15.3.1
