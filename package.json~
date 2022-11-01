@@ -21,7 +21,7 @@
   },
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^15.3.1",
+    "electron": "^17.0.0",
     "electron-builder": "^23.6.0"
   },
   "build": {
@@ -29,10 +29,7 @@
     "productName": "Pine Command Assist",
     "linux": {
       "icon": "./icons/",
-      "target": [
-        "pacman",
-        "deb"
-      ]
+      "target": ["pacman","deb"]
     },
     "extraResources": [
       "res",

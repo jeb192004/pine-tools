@@ -1,20 +1,20 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn run electron-builder build --linux deb --arm64
+  /usr/bin/node /usr/bin/yarn dist
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/bin:/var/lib/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+  /home/jimmyburn/.local/bin:/usr/local/bin:/usr/bin:/var/lib/snapd/snap/bin:/usr/local/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
 
 Yarn version: 
   1.22.19
 
 Node version: 
-  19.0.0
+  18.1.0
 
 Platform: 
-  linux arm64
+  linux x64
 
 Trace: 
-  SyntaxError: /home/manjaro/pine-tools/package.json: Expected double-quoted property name in JSON at position 749
+  SyntaxError: /home/jimmyburn/projects/pine-tools/package.json: Unexpected token { in JSON at position 808
       at JSON.parse (<anonymous>)
       at /usr/lib/node_modules/yarn/lib/cli.js:1629:59
       at Generator.next (<anonymous>)
@@ -53,7 +53,63 @@ npm manifest:
       "productName": "Pine Command Assist",
       "linux": {
         "icon": "./pine-cone-color.png",
-        
+        "target": [
+          "pacman",
+          "deb"
+        ]
+      }
+    }
+  }
+  {
+    "name": "pine-assist",
+    "version": "1.0.2",
+    "description": "An app made to assist with cli commands",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron .",
+      "pack": "electron-builder --dir",
+      "dist": "electron-builder -l --arm64"
+    },
+    "repository": "https://github.com/jeb192004/pine-tools",
+    "keywords": [
+      "Electron",
+      "pine64",
+      "pinephone",
+      "commands"
+    ],
+    "author": {
+      "name": "James Burnison",
+      "email": "jeb192004@gmail.com"
+    },
+    "license": "CC0-1.0",
+    "devDependencies": {
+      "electron": "^17.0.0",
+      "electron-builder": "^23.6.0"
+    },
+    "build": {
+      "appId": "com.jeb.pine-command-assist",
+      "productName": "Pine Command Assist",
+      "linux": {
+        "icon": "./icons/",
+        "target": [
+          {
+            "target": "pacman",
+            "arch": "arm64"
+          },
+          {
+            "target": "deb",
+            "arch": "arm64"
+          }
+        ]
+      },
+      "extraResources": [
+        "res",
+        "icons",
+        "48x48.png"
+      ],
+      "directories": {
+        "buildResources": "icons",
+        "output": "output"
       }
     }
   }
@@ -170,9 +226,9 @@ Lockfile:
     "version" "0.7.31"
   
   "@types/node@*":
-    "integrity" "sha512-KIGQJyya+opDCFvDSZMNNS899ov5jlNdtN7PypgHWeb8e+5vWISdwTRo/ClsNVlmDihzOGqFyNBDamUs7TQQCA=="
-    "resolved" "https://registry.npmjs.org/@types/node/-/node-16.18.2.tgz"
-    "version" "16.18.2"
+    "integrity" "sha512-jh6m0QUhIRcZpNv7Z/rpN+ZWXOicUUQbSoWks7Htkbb9IjFQj4kzcX/xFCkjstCj5flMsN8FiSvt+q+Tcs4Llg=="
+    "resolved" "https://registry.npmjs.org/@types/node/-/node-16.18.3.tgz"
+    "version" "16.18.3"
   
   "@types/node@^14.6.2":
     "integrity" "sha512-qelS/Ra6sacc4loe/3MSjXNL1dNQ/GjxNHVzuChwMfmk7HuycRLVQN2qNY3XahK+fZc5E2szqQSKUyAF0E+2bg=="
@@ -680,10 +736,10 @@ Lockfile:
       "lazy-val" "^1.0.5"
       "mime" "^2.5.2"
   
-  "electron@^15.3.1":
-    "integrity" "sha512-6/qp3Dor7HSGq28qhJEVD1zBFZoWicmo3/ZLvo7rhXPPZFwEMSJGPMEZM9WYSfWW4t/OozpWNuuDe970cF7g2Q=="
-    "resolved" "https://registry.npmjs.org/electron/-/electron-15.3.1.tgz"
-    "version" "15.3.1"
+  "electron@^17.0.0":
+    "integrity" "sha512-3UXcBQMwbMWdPvGHaSdPMluHrd+/bc+K143MyvE5zVZ+S1XCHt4sau7dj6svJHns5llN0YG/c6h/vRfadIp8Zg=="
+    "resolved" "https://registry.npmjs.org/electron/-/electron-17.0.0.tgz"
+    "version" "17.0.0"
     dependencies:
       "@electron/get" "^1.13.0"
       "@types/node" "^14.6.2"
