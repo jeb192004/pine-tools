@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('versions', {
   closeW: (val) => ipcRenderer.invoke('close', val),
   minW: (val) => ipcRenderer.invoke('min', val),
   maxW: (val) => ipcRenderer.invoke('max', val),
+  toast: (data)=> ipcRenderer.send('toast', data),
   
   // we can also expose variables, not just functions
 })

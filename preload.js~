@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld('versions', {
   toggle_kb: () => ipcRenderer.invoke('toggle_kb'),
   set_password: (val) => ipcRenderer.send('alert', val),
   delete_item: (val) => ipcRenderer.invoke('delete', val),
+  closeW: (val) => ipcRenderer.invoke('close', val),
+  minW: (val) => ipcRenderer.invoke('min', val),
+  maxW: (val) => ipcRenderer.invoke('max', val),
   
   // we can also expose variables, not just functions
 })

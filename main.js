@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain, nativeTheme, dialog} = require('electron')
+const {app, BrowserWindow, ipcMain, nativeTheme, dialog, Notification} = require('electron')
 const path = require('path')
 
 const { exec } = require("child_process");
@@ -114,6 +114,7 @@ ipcMain.handle('delete', async(event, arg) => {
 		if(index !== undefined)json.splice(index,1)
 		await write_json(doc + '/', json)
 		console.log(json)
+		
 })
 ipcMain.handle('close', async(event, arg) => {
 	console.log('close')
@@ -124,6 +125,11 @@ ipcMain.handle('min', async(event, arg) => {
 })
 ipcMain.handle('max', async(event, arg) => {
 		mainWindow.maximize();
+})
+ipcMain.on('toast', async(event, arg) => {
+	console.log('toast',arg)
+		await alert('', '',arg,`Copied to clipboard!`, []);
+		event.reply('toast-reply', 'pong');	
 })
 
   // and load the index.html of the app.

@@ -61,36 +61,41 @@ try{
   var clones = document.querySelectorAll('.clone');
   clones.forEach(clone => {
 	  clone.addEventListener("click", (event)=>{
-		  copyText(clone.dataset.command)
-	console.log(clone.dataset.command)
+		  copyText(clone.dataset.command);
+		  console.log(clone.id);
+		  toast(clone.id);
 	})
 });
 var pushes = document.querySelectorAll('.push');
   pushes.forEach(push => {
 	  push.addEventListener("click", (event)=>{
-		  copyText(push.dataset.command)
-	console.log(push.dataset.command)
+		  copyText(push.dataset.command);
+		  console.log(push.dataset.command);
+		  toast(push.id);
 	})
 });
 var pulls = document.querySelectorAll('.pull');
   pulls.forEach(pull => {
 	  pull.addEventListener("click", (event)=>{
-		  copyText(pull.dataset.command)
-	console.log(pull.dataset.command)
+		  copyText(pull.dataset.command);
+		  console.log(pull.dataset.command);
+		  toast(pull.id);
 	})
 });
 var deletes = document.querySelectorAll('.delete');
   deletes.forEach(delete_ => {
 	  delete_.addEventListener("click", (event)=>{
 		  versions.delete_item(delete_.id)
-		  console.log(delete_.id)
+		  console.log(delete_.id);
+		  location.reload();
 	})
 });
 var copys = document.querySelectorAll('.copy');
   copys.forEach(copy => {
 	  copy.addEventListener("click", (event)=>{
-		  copyText(copy.dataset.command)
-	console.log(copy.dataset.command)
+		  copyText(copy.dataset.command);
+		  console.log(copy.dataset.command);
+		  toast(copy.id);
 	})
 });
   
@@ -100,20 +105,21 @@ var copys = document.querySelectorAll('.copy');
 func()
 document.getElementById("keyboard").addEventListener("click", keyboard_config)
 async function keyboard_config(){
-	  var passwd = document.getElementById('password').value;
 	  //console.log(passwd)
 	  //const res = await versions.keyboard_config(passwd)
 	  //console.log(res)
 	  copyText(`sudo ${install} && 
 	  mkdir -p /usr/lib/systemd/system/phosh.service.d && 
 	  sudo touch /usr/lib/systemd/system/phosh.service.d/override.conf && 
-	  echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo tee /usr/lib/systemd/system/phosh.service.d/override.conf`)
+	  echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
+	  toast('Xkb app and config command')
 	}
 document.getElementById("add_command_button").addEventListener("click", add_command)
 async function add_command(){
 	var name = document.getElementById('name').value;
 	var command = document.getElementById('command').value;
-		versions.add(`${name},${command}`)
+		versions.add(`${name},${command}`);
+		location.reload();
 	}
 
 document.getElementById("on_screen_keyboard").addEventListener("click", toggle_kb_on)
@@ -133,6 +139,17 @@ function copyText(text){
 	}
 
 document.querySelector('.button.close').addEventListener("click", ()=>{versions.closeW();});
-document.querySelector('.button.minimize').addEventListener("click", ()=>{});
-document.querySelector('.button.maximize').addEventListener("click", ()=>{});
+document.querySelector('.button.minimize').addEventListener("click", ()=>{versions.minW()});
+document.querySelector('.button.maximize').addEventListener("click", ()=>{versions.maxW()});
 
+
+ function toast(item) {
+  // Get the snackbar DIV
+  var x = document.getElementById("snackbar");
+  x.innerHTML = item + 'coppied to clipboard!';
+  // Add the "show" class to DIV
+  x.className = "show";
+
+  // After 3 seconds, remove the show class from DIV
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+} 
