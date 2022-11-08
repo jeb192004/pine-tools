@@ -5,12 +5,13 @@
  * `contextIsolation` is turned on. Use the contextBridge API in `preload.js`
  * to expose Node.js functionality from the main process.
  */
- var distro, de, onskb_state, onskb_button_text;
+ var distro, kernel, de, onskb_state, onskb_button_text;
 const func = async () => {
 try{
   var info = await versions.info();
   info = JSON.parse(info);
   distro = info.distro;
+  kernel = info.kernel;
   de = info.de
   if(info.hasOwnProperty('onskb_state')){
 	  onskb_state = info.onskb_state;
@@ -25,6 +26,7 @@ try{
   	document.getElementById('kb_config_app_name').innerHTML = 'xkb-data'; 
   	install = 'apt install xkb-data';  	
   	}
+  	//if(){}
   
   if(de === 'Phosh:GNOME'){
 	  document.getElementById('file_to_create').innerHTML = 'phosh.service.d/override.conf';
@@ -33,6 +35,7 @@ try{
 	}
   if(de === 'Plasma'){document.getElementById('file_to_create').innerHTML = '~/.config/xkbrc'}
   document.getElementById('distro').innerText = info.distro;
+  document.getElementById('kernel').innerText = kernel;
   document.getElementById('de').innerText = info.de;
   document.getElementById('save-folder').innerText = info.folder;
   var json = await versions.get_json();
@@ -109,9 +112,9 @@ async function keyboard_config(){
 	  //const res = await versions.keyboard_config(passwd)
 	  //console.log(res)
 	  copyText(`sudo ${install} && 
-	  mkdir -p /usr/lib/systemd/system/phosh.service.d && 
+	  sudo mkdir -p /usr/lib/systemd/system/phosh.service.d && 
 	  sudo touch /usr/lib/systemd/system/phosh.service.d/override.conf && 
-	  echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
+	  sudo echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
 	  toast('Xkb app and config command')
 	}
 document.getElementById("add_command_button").addEventListener("click", add_command)

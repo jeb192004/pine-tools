@@ -61,9 +61,13 @@ body{
 	.button.maximize{background:#66e017; display: none;}
 	
 	.title{
+		position:fixed;
 		opacity: .5;
-		float: left;
+		left:10px;
 		font-size: 20px;
+		width: calc(50% - 7px);
+		overflow: hidden;
+		white-space:nowrap;
 		 }
 		 
 		 img{

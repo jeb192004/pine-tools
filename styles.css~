@@ -56,14 +56,18 @@ body{
 	}
 	
 	.button.close{background:#f03823;}
-	.button.close div{text-align: center; padding-top: 5px;}
+	.button.close div{text-align: center; padding-top: 5px; }
 	.button.minimize{background:#fca101; margin:0 3px;display: none;}
 	.button.maximize{background:#66e017; display: none;}
 	
 	.title{
+		position:fixed;
 		opacity: .5;
-		float: left;
+		left:10px;
 		font-size: 20px;
+		width: calc(50% - 7px);
+		overflow: hidden;
+		
 		 }
 		 
 		 img{

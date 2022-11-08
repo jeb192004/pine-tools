@@ -8,7 +8,7 @@ I would like to add support for more distro/de.
 
 This app is built using electron, nodejs, javascript, html, and css.
 
-I've noticed electronjs v20 there are issues with text not appearing at all in the app.  As of right now I am using Electron v15.3.1.  I'm not seeing any issues as of now.
+I've noticed electronjs v20 there are issues with text not appearing at all in the app.  As of right now I am using Electron v17.0.0.  I'm not seeing any issues as of now.
 
 **Other features:**
 

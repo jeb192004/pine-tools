@@ -4,7 +4,7 @@ const path = require('path')
 
 const { exec } = require("child_process");
 const fs = require('fs');
-var mainWindow, distro, doc, de, install, uninstall, my_commands = [], onskb_state;
+var mainWindow, distro, kernel, doc, de, install, uninstall, my_commands = [], onskb_state;
 
 function createWindow () {
   // Create the browser window.
@@ -26,18 +26,14 @@ ipcMain.handle('info',async()=>{
 	var info_json = {};
 	distro = await do_cli(`grep '^NAME' /etc/os-release`);
 	distro = distro.split('"')[1];
-	if(distro === 'Manjaro-ARM'){
-			install = 'pacman -S xkeyboard-config --noconfirm';
-		}
-	if(distro === 'Debian GNU/Linux'){
-		install = 'apt install xkb-data -y'	
-	}
+	kernel = await do_clu(`uname -r`);
+	kernel = kernel.replace(/\s/g,"");
 	de = await do_cli(`echo $XDG_CURRENT_DESKTOP`);
 	de = de.replace(/\s/g,'')
 	doc = await do_cli('echo ~/Documents');
 	doc = doc.replace(/\s/g,'')
 	info_json.distro = distro;
-	
+	info_json.kernel = kernel;
 	var json = await get_json(doc+'/');
 	info_json.de = de;
 	info_json.folder = doc;
@@ -48,24 +44,7 @@ ipcMain.handle('info',async()=>{
 	}
 	return JSON.stringify(info_json);
 	})
-ipcMain.on('keyboard',async(event, password)=>{
-		var res, q, buttons;
-		var isInstall = await alert('install', `XKB Config`,`Are you sure you want to run the install script?`,`Password: ${password}`,['yes','no']);
-		if(isInstall){
-			res = await do_cli(`echo "${password}" | sudo -S ${install}`);
-			if (res === 'error') {res = 'Could not install.  Check your password.'; q = "";buttons = ['cancel']}else {
-				res = 'XKB Config Installed!'; q = "Continue?";buttons = ['yes']
-			}
-			res = await alert('install', `XKB Config Install`,res,q, buttons);
-			if (!res) {return}
-			await do_cli(`echo "${password}" | sudo -S mkdir /usr/lib/systemd/system/phosh.service.d`);
-			await do_cli(`echo "${password}" | sudo -S touch /usr/lib/systemd/system/phosh.service.d/override.conf`);
-			await do_cli(`echo "${password}" | echo "[Service]\nEnvironment=XKB_DEFAULT_MODEL=ppkb" | sudo -S tee /usr/lib/systemd/system/phosh.service.d/override.conf`);
-			res = `Keyboard config fnished successfully!`;q = `Please restart Phosh or the device.`;buttons = ['ok']
-			alert('install', `XKB Config Install`,res,q, buttons);
-		}
-		return 'finished';
-	});
+
 ipcMain.handle('toggle_kb',async()=>{
 	if(onskb_state === 'true'){
 		await do_cli('gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false');
@@ -129,7 +108,7 @@ ipcMain.handle('max', async(event, arg) => {
 ipcMain.on('toast', async(event, arg) => {
 	console.log('toast',arg)
 		await alert('', '',arg,`Copied to clipboard!`, []);
-		return	
+		event.reply('toast-reply', 'pong');	
 })
 
   // and load the index.html of the app.

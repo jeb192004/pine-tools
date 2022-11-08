@@ -30,8 +30,11 @@
     "productName": "Pine Command Assist",
     "linux": {
       "icon": "./icons/",
-      "target": ["pacman","deb"],
-      "category":"Utility"
+      "target": [
+        "pacman",
+        "deb"
+      ],
+      "category": "Utility"
     },
     "extraResources": [
       "res",
