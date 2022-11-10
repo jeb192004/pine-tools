@@ -1,4 +1,6 @@
 node_modules/
-dist/linux-unpacked/
-dist/linux-arm64-unpacked/
+output/linux-unpacked/
 output/linux-arm64-unpacked/
+output/builder.debug.yml
+output/builder-effective-config.yaml
+output/latest.yml
