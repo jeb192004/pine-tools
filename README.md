@@ -22,6 +22,6 @@ I've noticed electronjs v20 there are issues with text not appearing at all in t
 	
 **Downloads:**
 
-[Manjaro/Arch](https://downgit.github.io/#/home?url=https://github.com/jeb192004/pine-tools/blob/main/output/pine-assist-1.0.4-aarch64.pacman)
+[Manjaro/Arch](https://downgit.github.io/#/home?url=https://github.com/jeb192004/pine-tools/blob/main/output/pine-assist-1.0.5-aarch64.pacman)
 
-[Mobian](https://downgit.github.io/#/home?url=https://github.com/jeb192004/pine-tools/blob/main/output/pine-assist_1.0.4_arm64.deb)
+[Mobian](https://downgit.github.io/#/home?url=https://github.com/jeb192004/pine-tools/blob/main/output/pine-assist_1.0.5_arm64.deb)
